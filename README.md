@@ -9,3 +9,5 @@
 - [Implementation of Attention Mechanisms and Multi-Head Attention](./Implementation%20of%20Attention%20Mechanisms%20and%20Multi-Head%20Attention)
 ### 第四章：Hugging Face Transformers库的应用
 - [Applications of the Hugging Face Transformers Library](./Applications%20of%20the%20Hugging%20Face%20Transformers%20Library)
+### 第五章：数据预处理与文本分词技术
+- [Data Preprocessing and Text Tokenization Techniques](./Data%20Preprocessing%20and%20Text%20Tokenization%20Techniques)
