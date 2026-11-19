@@ -13,3 +13,5 @@
 - [Data Preprocessing and Text Tokenization Techniques](./Data%20Preprocessing%20and%20Text%20Tokenization%20Techniques)
 ### 第六章：模型微调与迁移学习
 - [Model Fine-tuning and Transfer Learning](./Model%20Fine-tuning%20and%20Transfer%20Learning)
+### 第七章：文本生成与推理技术
+- [Text Generation and Reasoning Technology](./Text%20Generation%20and%20Reasoning%20Technology)
