@@ -11,3 +11,5 @@
 - [Applications of the Hugging Face Transformers Library](./Applications%20of%20the%20Hugging%20Face%20Transformers%20Library)
 ### 第五章：数据预处理与文本分词技术
 - [Data Preprocessing and Text Tokenization Techniques](./Data%20Preprocessing%20and%20Text%20Tokenization%20Techniques)
+### 第六章：模型微调与迁移学习
+- [Model Fine-tuning and Transfer Learning](./Model%20Fine-tuning%20and%20Transfer%20Learning)
