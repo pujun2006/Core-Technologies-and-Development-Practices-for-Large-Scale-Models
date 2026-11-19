@@ -7,3 +7,5 @@
 - [Principles and Implementation of Transformer Encoders and Decoders](./Principles%20and%20Implementation%20of%20Transformer%20Encoders%20and%20Decoders)
 ### 第三章：注意力机制与多头注意力的实现
 - [Implementation of Attention Mechanisms and Multi-Head Attention](./Implementation%20of%20Attention%20Mechanisms%20and%20Multi-Head%20Attention)
+### 第四章：Hugging Face Transformers库的应用
+- [Applications of the Hugging Face Transformers Library](./Applications%20of%20the%20Hugging%20Face%20Transformers%20Library)
