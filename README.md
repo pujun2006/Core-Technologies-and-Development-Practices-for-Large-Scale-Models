@@ -20,4 +20,4 @@
 ### 第九章：分布式训练与多GPU并行处理
 - [Distributed Training and Multi-GPU Parallel Processing](./Distributed%20Training%20and%20Multi-GPU%20Parallel%20Processing)
 ### 第十章：分类、回答与命名实体识别
-- [Classification, Question Answering, and Named Entity Recognition](./Classification, Question Answering, and%20Named%20Entity%20Recognition)
+- [Classification, Question Answering, and Named Entity Recognition](./Classification,%20Question%20Answering,%20and%20Named%20Entity%20Recognition)
