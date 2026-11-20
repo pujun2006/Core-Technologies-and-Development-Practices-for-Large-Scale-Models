@@ -17,3 +17,5 @@
 - [Text Generation and Reasoning Technology](./Text%20Generation%20and%20Reasoning%20Technology)
 ### 第八章：模型优化与量化技术
 - [Model Optimization and Quantization Techniques](./Model%20Optimization%20and%20Quantization%20Techniques)
+### 第九章：分布式训练与多GPU并行处理
+- [Distributed Training and Multi-GPU Parallel Processing](./Distributed%20Training%20and%20Multi-GPU%20Parallel%20Processing)
