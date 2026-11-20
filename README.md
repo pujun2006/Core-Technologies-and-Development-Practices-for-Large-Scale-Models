@@ -15,3 +15,5 @@
 - [Model Fine-tuning and Transfer Learning](./Model%20Fine-tuning%20and%20Transfer%20Learning)
 ### 第七章：文本生成与推理技术
 - [Text Generation and Reasoning Technology](./Text%20Generation%20and%20Reasoning%20Technology)
+### 第八章：模型优化与量化技术
+- [Model Optimization and Quantization Techniques](./Model%20Optimization%20and%20Quantization%20Techniques)
