@@ -3,9 +3,10 @@ matplotlib==3.10.9
 transformers==5.17.0
 zhconv==1.4.3
 py2neo==2021.2.4
-
-
+lime==0.2.0.1
+shap==0.49.1
 scikit-learn==1.7.2
+
 nltk==3.10.3
 gensim==4.4.0
 jieba==0.42.1
