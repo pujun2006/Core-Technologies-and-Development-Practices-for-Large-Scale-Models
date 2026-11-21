@@ -1,4 +1,6 @@
-import lime
+# 若在 Colab 中首次运行且尚未安装依赖，可先执行以下命令：
+# !pip install -q lime shap transformers datasets torch
+
 import numpy as np
 import shap
 import torch
@@ -14,22 +16,24 @@ from transformers import (
 )
 
 # 1. 加载数据集与分词器/模型初始化
-from datasets import load_dataset
-
 try:
-    # 优先尝试使用标准命名空间
     dataset = load_dataset("stanfordnlp/imdb")
 except Exception:
-    # 备用方案
     dataset = load_dataset("imdb")
 
 print("数据集加载成功！结构如下：")
 print(dataset)
 
 model_name = "bert-base-uncased"
+id2label = {0: "NEGATIVE", 1: "POSITIVE"}
+label2id = {"NEGATIVE": 0, "POSITIVE": 1}
+
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSequenceClassification.from_pretrained(
-    model_name, num_labels=2
+    model_name,
+    num_labels=2,
+    id2label=id2label,
+    label2id=label2id,
 )
 
 
@@ -42,7 +46,7 @@ def preprocess(data):
 
 tokenized_datasets = dataset.map(preprocess, batched=True)
 
-# 3. 训练配置（移除已废弃的 logging_dir，添加 logging_steps）
+# 3. 训练配置
 training_args = TrainingArguments(
     output_dir="./results",
     num_train_epochs=1,
@@ -64,6 +68,12 @@ trainer = Trainer(
 print(">>> 开始微调模型...")
 trainer.train()
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
+model.eval()
+
+sample_text = ["The movie was fantastic and I enjoyed every bit of it!"]
+
 
 # ======================================================================
 # 4. 可解释性方法一：SHAP 归因分析
@@ -71,58 +81,66 @@ trainer.train()
 print("\n" + "=" * 50)
 print(">>> 开始计算 SHAP 解释...")
 
-# 适配 SHAP 的正确做法：创建 text-classification pipeline
 pred_pipeline = pipeline(
     "text-classification",
     model=model,
     tokenizer=tokenizer,
-    return_all_scores=True,
+    top_k=None,
+    batch_size=32,
     device=0 if torch.cuda.is_available() else -1,
 )
 
-# 使用正确的 pipeline 构建 SHAP Explainer
 shap_explainer = shap.Explainer(pred_pipeline)
-
-sample_text = ["The movie was fantastic and I enjoyed every bit of it!"]
-# SHAP 直接接收文本列表
 shap_values = shap_explainer(sample_text)
 
-# 绘制文本归因图 (在 Jupyter Notebook 中可用 shap.plots.text(shap_values[0]))
-print("SHAP 计算完成，类别 [POSITIVE] 归因结果：")
-print(shap_values[0, :, "POSITIVE"])
+print("output_names:", shap_values.output_names)
+print("shap_values.shape:", shap_values.shape)
+
+# 兼容自定义 POSITIVE、默认 LABEL_1 或整数索引
+if "POSITIVE" in shap_values.output_names:
+    target_key = "POSITIVE"
+elif "LABEL_1" in shap_values.output_names:
+    target_key = "LABEL_1"
+else:
+    target_key = shap_values.shape[-1] - 1
+
+print(f"SHAP 计算完成，类别 [{target_key}] 归因结果：")
+print(shap_values[0, :, target_key])
+
+# 在 Jupyter / Colab 中如需交互式文本归因可视化，可取消下方注释：
+# shap.plots.text(shap_values[0])
 
 
 # ======================================================================
-# 5. 可解释性方法二：LIME 局部局部特征解释
+# 5. 可解释性方法二：LIME 局部特征解释
 # ======================================================================
 print("\n" + "=" * 50)
 print(">>> 开始计算 LIME 解释...")
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
-model.eval()
 
-
-# 封装 LIME 专属的预测概率函数 (接收文本列表，输出概率矩阵 [N, num_labels])
-def predict_proba(texts):
-    tokens = tokenizer(
-        texts,
-        padding=True,
-        truncation=True,
-        max_length=128,
-        return_tensors="pt",
-    ).to(device)
-    with torch.no_grad():
-        outputs = model(**tokens)
-        probs = F.softmax(outputs.logits, dim=-1)
-    return probs.cpu().numpy()
+def predict_proba(texts, batch_size=32):
+    all_probs = []
+    for i in range(0, len(texts), batch_size):
+        batch_texts = texts[i : i + batch_size]
+        tokens = tokenizer(
+            batch_texts,
+            padding=True,
+            truncation=True,
+            max_length=128,
+            return_tensors="pt",
+        ).to(device)
+        with torch.no_grad():
+            outputs = model(**tokens)
+            probs = F.softmax(outputs.logits, dim=-1)
+            all_probs.append(probs.cpu().numpy())
+    return np.vstack(all_probs)
 
 
 class_names = ["negative", "positive"]
 lime_explainer = LimeTextExplainer(class_names=class_names)
 
 lime_exp = lime_explainer.explain_instance(
-    sample_text[0], classifier_fn=predict_proba, num_features=10
+    sample_text[0], classifier_fn=predict_proba, num_features=10, num_samples=1000
 )
 
 print("LIME 单词权重解释排序：")
@@ -151,7 +169,6 @@ with torch.no_grad():
     )
     attentions = outputs.attentions
 
-# 修正语法错误，避免控制台刷屏
 for layer_idx, layer_attention in enumerate(attentions):
     print(
         f"Layer {layer_idx+1:2d} attention weights shape: {layer_attention.shape}"
