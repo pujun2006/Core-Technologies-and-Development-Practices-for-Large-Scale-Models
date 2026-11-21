@@ -21,3 +21,5 @@
 - [Distributed Training and Multi-GPU Parallel Processing](./Distributed%20Training%20and%20Multi-GPU%20Parallel%20Processing)
 ### 第十章：分类、回答与命名实体识别
 - [Classification, Question Answering, and Named Entity Recognition](./Classification,%20Question%20Answering,%20and%20Named%20Entity%20Recognition)
+### 第十一章：深度学习模型的可解释性
+- [Interpretability of Deep Learning Models](./Interpretability%20of%20Deep%20Learning%20Models)
