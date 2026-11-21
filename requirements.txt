@@ -2,7 +2,7 @@ torch==2.14.0
 matplotlib==3.10.9
 transformers==5.17.0
 zhconv==1.4.3
-
+py2neo==2021.2.4
 
 
 scikit-learn==1.7.2
